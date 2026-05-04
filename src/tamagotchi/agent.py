@@ -11,7 +11,7 @@ from tamagotchi.config import load_pet_config
 from tamagotchi.controller import PetController
 from tamagotchi.dialogues import DialogueBook
 from tamagotchi.pet import Pet
-from tamagotchi.platform_macos import hide_dock_icon
+from tamagotchi.platform_overlay import configure_overlay_window, hide_dock_icon
 from tamagotchi.state import load_stats
 from tamagotchi.window import PetWindow
 
@@ -107,5 +107,14 @@ class Agent:
     def run(self) -> int:
         self._window.spawn_at_random_bottom()
         self._window.show()
+        # macOS: raise the NSWindow level + don't hide on app deactivate, so the
+        # pet stays visible when the user clicks into other apps and never steals
+        # keyboard focus from text fields.
+        configure_overlay_window(self._window)
+        # Same treatment for the speech bubble.
+        bubble = self._controller.bubble
+        bubble.show()
+        bubble.hide()  # force NSWindow creation, then hide until needed
+        configure_overlay_window(bubble)
         self._controller.start()
         return int(QGuiApplication.exec())

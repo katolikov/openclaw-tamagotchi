@@ -45,9 +45,13 @@ class PetWindow(QWidget):
             Qt.WindowType.FramelessWindowHint
             | Qt.WindowType.WindowStaysOnTopHint
             | Qt.WindowType.Tool  # no taskbar entry
+            | Qt.WindowType.WindowDoesNotAcceptFocus  # never steal keyboard focus
         )
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating, True)
+        # Belt-and-braces at the QWidget level so clicks on the pet never pull
+        # focus away from text fields the user is typing in.
+        self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.setWindowTitle(config.name)
 
         self._label = QLabel(self)

@@ -10,7 +10,7 @@ from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QApplication
 
 from tamagotchi.animation import SpriteSheet
-from tamagotchi.platform_macos import hide_dock_icon
+from tamagotchi.platform_overlay import configure_overlay_window, hide_dock_icon
 
 PETS_DIR = Path(__file__).resolve().parent.parent / "pets"
 
@@ -55,3 +55,12 @@ def test_hide_dock_icon_safe_to_call_repeatedly(qapp: QApplication) -> None:
     # Whatever the platform, calling this must never raise.
     hide_dock_icon()
     hide_dock_icon()
+
+
+def test_configure_overlay_window_safe_with_unshown_widget(qapp: QApplication) -> None:
+    """Must never raise / crash even when called on a widget without a native window."""
+    from PySide6.QtWidgets import QWidget
+
+    w = QWidget()
+    # Should silently no-op (not crash) under offscreen Qt + un-shown widget.
+    assert configure_overlay_window(w) is False

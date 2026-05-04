@@ -115,7 +115,9 @@ def _save_gif(frames: list[Image.Image], path: Path, fps: float) -> None:
     # Build a shared palette from the first frame so every frame uses the same
     # color table (avoids the "frames flicker between palettes" GIF artifact).
     base = rgb_frames[0].quantize(colors=255, method=Image.Quantize.MEDIANCUT)
-    pal_frames = [base] + [f.quantize(palette=base, dither=Image.Dither.NONE) for f in rgb_frames[1:]]
+    pal_frames = [base] + [
+        f.quantize(palette=base, dither=Image.Dither.NONE) for f in rgb_frames[1:]
+    ]
     pal_frames[0].save(
         path,
         save_all=True,
@@ -303,7 +305,10 @@ def _social_preview() -> Image.Image:
     sh = Image.new("RGBA", img.size, (0, 0, 0, 0))
     sd = ImageDraw.Draw(sh)
     sx, sy = px + pet.width // 2, H - ground_h + 16
-    sd.ellipse([(sx - pet.width // 2 + 14, sy - 10), (sx + pet.width // 2 - 14, sy + 10)], fill=SHADOW)
+    sd.ellipse(
+        [(sx - pet.width // 2 + 14, sy - 10), (sx + pet.width // 2 - 14, sy + 10)],
+        fill=SHADOW,
+    )
     sh = sh.filter(ImageFilter.GaussianBlur(6))
     img = Image.alpha_composite(img, sh)
 

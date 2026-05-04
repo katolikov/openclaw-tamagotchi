@@ -49,9 +49,11 @@ class SpeechBubble(QWidget):
             | Qt.WindowType.WindowStaysOnTopHint
             | Qt.WindowType.Tool
             | Qt.WindowType.WindowTransparentForInput  # never steals clicks
+            | Qt.WindowType.WindowDoesNotAcceptFocus  # never steals keyboard focus
         )
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating, True)
+        self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
 
         self._text = ""
