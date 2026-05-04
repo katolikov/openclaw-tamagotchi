@@ -40,26 +40,28 @@ def _palette_claw() -> dict[str, tuple[int, int, int, int]]:
 
 
 def _palette_rabbit() -> dict[str, tuple[int, int, int, int]]:
+    # Mochi — agouti brown lop-ear bunny.
     return {
         " ": TRANSPARENT,
-        "F": (245, 245, 245, 255),  # white fluff
-        "G": (200, 200, 210, 255),  # fluff shadow / cool gray
-        "P": (255, 170, 200, 255),  # inner ear / nose
-        "E": (40, 30, 30, 255),
-        "W": (250, 250, 250, 255),
-        "M": (210, 80, 110, 255),
+        "F": (139, 90, 50, 255),    # warm sepia brown fur
+        "G": (90, 55, 30, 255),     # darker brown shadow
+        "P": (220, 130, 140, 255),  # pink nose
+        "E": (30, 20, 15, 255),     # eye
+        "W": (240, 230, 220, 255),  # cream muzzle patch
+        "M": (210, 80, 110, 255),   # unused (kept for renderer compatibility)
     }
 
 
 def _palette_dachshund() -> dict[str, tuple[int, int, int, int]]:
+    # Frank — classic black-and-tan dachshund.
     return {
         " ": TRANSPARENT,
-        "K": (139, 90, 43, 255),    # rich brown
-        "L": (95, 60, 28, 255),     # darker brown shadow
-        "T": (200, 150, 90, 255),   # tan highlight
-        "E": (30, 20, 20, 255),
-        "W": (250, 250, 250, 255),
-        "M": (60, 40, 30, 255),     # dark nose
+        "K": (35, 28, 25, 255),     # near-black body
+        "L": (10, 8, 6, 255),       # outline / shadow / nose
+        "T": (175, 100, 45, 255),   # rust-tan markings
+        "E": (10, 8, 6, 255),       # eye
+        "W": (210, 160, 100, 255),  # lighter tan highlight
+        "M": (10, 8, 6, 255),       # nose (same as L)
     }
 
 
@@ -176,33 +178,35 @@ CLAW = PetSpriteSet(
 )
 
 
-# ---- RABBIT (white, tall ears) ----------------------------------------------
-# Tall ears at top, round body, pink nose.
+# ---- MOCHI (brown lop-ear bunny) --------------------------------------------
+# Lop-ear silhouette: rounded head with floppy ears hanging down on the sides
+# of the face, framed cream muzzle, pink nose. Inspired by a real lop-eared
+# brown bunny (the player's actual rabbit).
 _RABBIT_OPEN_EYES = [
     "                                ",
-    "         FF        FF           ",
-    "         FF        FF           ",
-    "         FF        FF           ",
-    "         FFP      PFF           ",
-    "         FFP      PFF           ",
-    "         FFFF    FFFF           ",
-    "         FFFFFFFFFFFFF          ",
-    "       FFFFFFFFFFFFFFFFF        ",
-    "       FFFFFFFFFFFFFFFFF        ",
-    "       FFFEEFFFFFFFFEEFF        ",
-    "      FFFFEEFFFFFFFFEEFFF       ",
-    "      FFFFFFFFFFFFFFFFFFF       ",
-    "      FFFFFFFFFMMFFFFFFFF       ",
-    "      FFFFFFFFMMMMFFFFFFF       ",
-    "       FFFFFFFFFFFFFFFFF        ",
-    "       FFFFFFFFFFFFFFFFF        ",
-    "        FFFFFFFFFFFFFFF         ",
-    "        FFFFFFFFFFFFFFF         ",
-    "         FFFFFFFFFFFFF          ",
-    "         FFFFFFFFFFFFF          ",
-    "         FF FF FF FF            ",
-    "         FF FF FF FF            ",
-    "         GG GG GG GG            ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "         FFFFFFFFFFFFFF         ",
+    "        FFFFFFFFFFFFFFFF        ",
+    "       FFFFFFFFFFFFFFFFFF       ",
+    "      FFFFFFFFFFFFFFFFFFFF      ",
+    "      FFFFEEFFFFFFFEEFFFFF      ",
+    "     FFFFFEEFFFFFFFEEFFFFFF     ",
+    "     FFFFFFFFFFFFFFFFFFFFFF     ",
+    "     FFFFFFFFFFPPFFFFFFFFFF     ",
+    "    GFFFFFFFFFFPPFFFFFFFFFFG    ",
+    "    GFFFFFFFFFWWWWFFFFFFFFFG    ",
+    "    GGFFFFFFFFFWWFFFFFFFFFGG    ",
+    "    GGGFFFFFFFFFFFFFFFFFFGGG    ",
+    "     GGGFFFFFFFFFFFFFFFFGGG     ",
+    "      GGGFFFFFFFFFFFFFFGGG      ",
+    "       GGGGFFFFFFFFFFGGGG       ",
+    "        GGGGFFFFFFGGGG          ",
+    "         GGGGFFGGGG             ",
+    "           FFFFFF               ",
+    "           FF  FF               ",
+    "           GG  GG               ",
     "                                ",
     "                                ",
     "                                ",
@@ -213,9 +217,9 @@ _RABBIT_OPEN_EYES = [
     "                                ",
 ]
 _RABBIT_CLOSED_EYES = list(_RABBIT_OPEN_EYES)
-_RABBIT_CLOSED_EYES[10] = "       FFFFFFFFFFFFFFFFFF       "
-_RABBIT_CLOSED_EYES[11] = "      FFFFEEFFFFFFFFFEEFFF      "
-_RABBIT_CLOSED_EYES[12] = "      FFFFFFFFFFFFFFFFFFF       "
+_RABBIT_CLOSED_EYES[8] = "      FFFFFFFFFFFFFFFFFFFF      "
+_RABBIT_CLOSED_EYES[9] = "     FFFFFEEFFFFFFFEEFFFFFF     "
+_RABBIT_CLOSED_EYES[10] = "     FFFFFFFFFFFFFFFFFFFFFF     "
 
 RABBIT = PetSpriteSet(
     name="rabbit",
@@ -249,30 +253,33 @@ RABBIT = PetSpriteSet(
 )
 
 
-# ---- DACHSHUND (long brown sausage with floppy ears) ------------------------
-# Long horizontal body, short legs, floppy ears hanging down on the head.
+# ---- FRANK (black-and-tan dachshund) ----------------------------------------
+# Classic black-and-tan markings: black body, tan eyebrows above the eye, tan
+# muzzle, tan paws, tan chest. Long sausage-shaped body, short legs, tail up.
+# Inspired by a real black-and-tan dachshund.
 _DACHS_OPEN_EYES = [
     "                                ",
     "                                ",
     "                                ",
     "                                ",
     "                                ",
-    "                                ",
-    "                                ",
-    "                  KKKKKK        ",
-    "                 KKKKKKKK       ",
-    "                KKKKEKKKK       ",
-    "                KKKKEKKKK       ",
-    "                KKKKKKMKK       ",
-    "    KKKKKKKKKKKKKKKKKKKKK       ",
-    "   KKKKKKKKKKKKKKKKKKKKKKK      ",
-    "  KKKKKKKKKKKKKKKKKKKKKKKK      ",
-    "  KKKKKKKKKKKKKKKKKLKKKKK       ",
-    "  KKKKKKKKKKKKKKKKKLLKK         ",
-    "   KKKKKKKKKKKKKKKKLLK          ",
-    "    KK KK   KK KK   K           ",
-    "    KK KK   KK KK   K           ",
-    "    LL LL   LL LL   L           ",
+    "                  K             ",
+    "                 KKK            ",
+    "                KKKKKKK         ",
+    "               KKKKKKKKK        ",
+    "              KKKTTKKKKKK       ",
+    "              KKKTKEKKKKK       ",
+    "              KKKKKKTTKKL       ",
+    "              KKKKKTTTTKL       ",
+    "    KKKKKKKKKKKKKKKKKKKK        ",
+    "   KKKKKKKKKKKKKKKKKKKKKK       ",
+    "   KKKKKKKKKKKKKKKKKKKKKK       ",
+    "   TKKKKKKKKKKKKKKKKKKKK        ",
+    "   TTKKKKKKKKKKKKKKKKKK         ",
+    "   TKKKKKKKKKKKKKKKKKKL         ",
+    "    KK KK     KK KK             ",
+    "    KK KK     KK KK             ",
+    "    TT TT     TT TT             ",
     "                                ",
     "                                ",
     "                                ",
@@ -286,9 +293,9 @@ _DACHS_OPEN_EYES = [
     "                                ",
 ]
 _DACHS_CLOSED_EYES = list(_DACHS_OPEN_EYES)
-_DACHS_CLOSED_EYES[9] = "                KKKKKKKKK       "
-_DACHS_CLOSED_EYES[10] = "                KKKKEEKKK       "
-_DACHS_CLOSED_EYES[11] = "                KKKKKKMKK       "
+_DACHS_CLOSED_EYES[9]  = "              KKKTTKKKKKK       "
+_DACHS_CLOSED_EYES[10] = "              KKKKEEKKKKK       "
+_DACHS_CLOSED_EYES[11] = "              KKKKKKTTKKL       "
 
 DACHSHUND = PetSpriteSet(
     name="dachshund",
