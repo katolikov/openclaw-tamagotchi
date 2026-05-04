@@ -572,21 +572,24 @@ def main() -> None:
     social.convert("RGB").save(social_path, optimize=True)
     print(f"wrote {social_path} ({social.size[0]}x{social.size[1]})")
 
-    # 5) Per-pet idle GIFs + lineup GIF
-    for pet_name, frame_count, fps in [
-        ("claw", 8, 6.0),
-        ("rabbit", 8, 6.0),
-        ("dachshund", 8, 5.0),
-    ]:
-        sheet_path = ROOT / "pets" / pet_name / "sprites" / "idle.png"
+    # 5) Per-pet idle GIFs + lineup GIF.
+    # File names use the pet's display name (not the --pet slug) so renames
+    # / cache-busting don't drift away from what the README references.
+    per_pet = [
+        ("claw",      "claw",   8, 6.0),
+        ("rabbit",    "shamil", 8, 6.0),
+        ("dachshund", "alegra", 8, 5.0),
+    ]
+    for pet_dir, out_name, frame_count, fps in per_pet:
+        sheet_path = ROOT / "pets" / pet_dir / "sprites" / "idle.png"
         frames = _slice_sheet(sheet_path, frame_count)
         scaled = _scaled_frames(frames)
         comp = _composite_on_scene(scaled)
-        _save_gif(comp, DOCS / f"pet-{pet_name}.gif", fps=fps)
+        _save_gif(comp, DOCS / f"pet-{out_name}.gif", fps=fps)
 
     # All three pets idling side-by-side on one ground line.
     lineup = _pet_lineup_gif()
-    _save_gif(lineup, DOCS / "pets-lineup.gif", fps=6.0)
+    _save_gif(lineup, DOCS / "pets-lineup-v2.gif", fps=6.0)
 
 
 if __name__ == "__main__":

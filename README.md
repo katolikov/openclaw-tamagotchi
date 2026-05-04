@@ -29,14 +29,14 @@ remembers how it was feeling the last time you quit.
 Three pets ship in the box. Pick one with `--pet <name>`.
 
 <p align="center">
-  <img src="docs/pets-lineup.gif" alt="Claw, Shamil, and Alegra standing side-by-side" width="600">
+  <img src="docs/pets-lineup-v2.gif" alt="Claw, Shamil, and Alegra standing side-by-side" width="600">
 </p>
 
 | | Pet | Personality | Run with |
 | :---: | --- | --- | --- |
-| <img src="docs/pet-claw.gif" alt="Claw" width="120">        | **Claw** — pirate cat                 | dreamy, nostalgic, gently chaotic     | `tamagotchi --pet claw`      |
-| <img src="docs/pet-rabbit.gif" alt="Shamil" width="120">    | **Shamil** — brown bunny with tall ears | bouncy, snack-obsessed, ears for days | `tamagotchi --pet rabbit`    |
-| <img src="docs/pet-dachshund.gif" alt="Alegra" width="120"> | **Alegra** — black-and-tan dachshund  | long girl, slow brain, expert napper  | `tamagotchi --pet dachshund` |
+| <img src="docs/pet-claw.gif" alt="Claw" width="120">     | **Claw** — pirate cat                 | dreamy, nostalgic, gently chaotic     | `tamagotchi --pet claw`      |
+| <img src="docs/pet-shamil.gif" alt="Shamil" width="120"> | **Shamil** — brown bunny with tall ears | bouncy, snack-obsessed, ears for days | `tamagotchi --pet rabbit`    |
+| <img src="docs/pet-alegra.gif" alt="Alegra" width="120"> | **Alegra** — black-and-tan dachshund  | long girl, slow brain, expert napper  | `tamagotchi --pet dachshund` |
 
 Each pet has its own sprite art, its own `pet.yaml` (different walk speed,
 sleep timer, hunger curve), and its own dialogue book — so they actually
