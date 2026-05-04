@@ -261,23 +261,22 @@ _DACHS_OPEN_EYES = [
     "                                ",
     "                                ",
     "                                ",
-    "                  K             ",
-    "                 KKK            ",
-    "                KKKKKKK         ",
-    "               KKKKKKKKK        ",
-    "              KKKTTKKKKKK       ",
-    "              KKKTKEKKKKK       ",
-    "              KKKKKKTTKKL       ",
-    "              KKKKKTTTTKL       ",
-    "    KKKKKKKKKKKKKKKKKKKK        ",
-    "   KKKKKKKKKKKKKKKKKKKKKK       ",
-    "   KKKKKKKKKKKKKKKKKKKKKK       ",
-    "   TKKKKKKKKKKKKKKKKKKKK        ",
-    "   TTKKKKKKKKKKKKKKKKKK         ",
-    "   TKKKKKKKKKKKKKKKKKKL         ",
-    "    KK KK     KK KK             ",
-    "    KK KK     KK KK             ",
-    "    TT TT     TT TT             ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "  KK                            ",
+    "   KK                           ",
+    "    KK              KKKKKKKK    ",
+    "    KKKKKKKKKKKKKKKKKKKKKKKKK   ",
+    "    KKKKKKKKKKKKKKKKKKEKKKKKK   ",
+    "   TKKKKKKKKKKKKKKKKKKKKKKKKKLL ",
+    "   TKKKKKKKKKKKKKKKKKKKKKKKKKL  ",
+    "    KKKKKKKKKKKKKKKKKKKKKKKK    ",
+    "     KK KK       KK KK          ",
+    "     TT TT       TT TT          ",
+    "                                ",
+    "                                ",
     "                                ",
     "                                ",
     "                                ",
@@ -291,9 +290,7 @@ _DACHS_OPEN_EYES = [
     "                                ",
 ]
 _DACHS_CLOSED_EYES = list(_DACHS_OPEN_EYES)
-_DACHS_CLOSED_EYES[9]  = "              KKKTTKKKKKK       "
-_DACHS_CLOSED_EYES[10] = "              KKKKEEKKKKK       "
-_DACHS_CLOSED_EYES[11] = "              KKKKKKTTKKL       "
+_DACHS_CLOSED_EYES[13] = "    KKKKKKKKKKKKKKKKKKKKKKKKK   "
 
 DACHSHUND = PetSpriteSet(
     name="dachshund",
