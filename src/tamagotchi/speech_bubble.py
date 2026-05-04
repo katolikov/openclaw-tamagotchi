@@ -53,7 +53,11 @@ class SpeechBubble(QWidget):
         )
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating, True)
+        # Suppress the Windows DWM "ghost rectangle" behind translucent windows.
+        self.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground, True)
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.setStyleSheet("background: transparent;")
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
 
         self._text = ""
@@ -77,8 +81,16 @@ class SpeechBubble(QWidget):
         self._text = text
         self._resize_for_text(text)
         self._reposition()
-        self.show()
-        self.raise_()
+        # Note: deliberately NO raise_() / activateWindow() / show() of a
+        # window that's already created. Qt's setVisible(True) on a window
+        # that already has a native handle (created earlier in agent.run via
+        # show()/hide()) won't activate the parent app on macOS once the
+        # NSPanel has the NonactivatingPanel style mask set. show() is still
+        # needed if the widget happens to be hidden, but with the
+        # NonactivatingPanel + WindowDoesNotAcceptFocus flags it does NOT
+        # cause keyboard focus to leave the app the user is typing in.
+        if not self.isVisible():
+            self.show()
         self._start_fade(hold_ms)
         self.update()
 

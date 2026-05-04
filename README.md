@@ -28,6 +28,27 @@ remembers how it was feeling the last time you quit.
   <img src="docs/preview-all.gif" alt="All three animations side-by-side" width="720">
 </p>
 
+## Pets included
+
+Three pets ship in the box. Pick one with `--pet <name>`.
+
+<p align="center">
+  <img src="docs/pets-lineup.gif" alt="Claw, Mochi, and Frank standing side-by-side" width="600">
+</p>
+
+| | Pet | Personality | Run with |
+| :---: | --- | --- | --- |
+| <img src="docs/pet-claw.gif" alt="Claw" width="120">      | **Claw** — pirate cat   | dreamy, nostalgic, gently chaotic            | `tamagotchi --pet claw`      |
+| <img src="docs/pet-rabbit.gif" alt="Mochi" width="120">    | **Mochi** — white rabbit | bouncy, snack-obsessed, very expressive ears | `tamagotchi --pet rabbit`    |
+| <img src="docs/pet-dachshund.gif" alt="Frank" width="120"> | **Frank** — dachshund   | long boy, slow brain, professional napper    | `tamagotchi --pet dachshund` |
+
+Each pet has its own sprite art, its own `pet.yaml` (different walk speed,
+sleep timer, hunger curve), and its own dialogue book — so they actually
+*feel* different running around your screen, not just look different.
+
+> Want your own creature? See [HOWTO.md → Adding your own pet](HOWTO.md#adding-your-own-pet).
+> The whole pet is just a folder.
+
 ## Features
 
 - **Frameless, transparent, always-on-top window** — no taskbar entry, no dock icon (macOS optional)

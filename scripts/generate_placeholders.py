@@ -1,6 +1,6 @@
-"""Generate placeholder pixel-art sprites and the tray icon.
+"""Generate placeholder pixel-art sprites for every bundled pet, plus the tray icon.
 
-Run once after install:
+Run once after edits:
 
     python scripts/generate_placeholders.py
 
@@ -9,38 +9,104 @@ The result is committed to the repo so end users don't need to re-run it.
 
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
-SPRITES_DIR = ROOT / "pets" / "claw" / "sprites"
+PETS_ROOT = ROOT / "pets"
 TRAY_PATH = ROOT / "assets" / "tray_icon.png"
-
-# ---- Palette (RGBA) ---------------------------------------------------------
-TRANSPARENT = (0, 0, 0, 0)
-BODY = (255, 178, 102, 255)       # warm orange
-BODY_DARK = (204, 122, 51, 255)   # shadow
-EAR_INNER = (255, 102, 178, 255)  # pink
-EYE = (40, 30, 30, 255)           # near-black
-WHITE = (250, 250, 250, 255)
-MOUTH = (180, 40, 60, 255)        # mouth/nose
-
-PALETTE: dict[str, tuple[int, int, int, int]] = {
-    " ": TRANSPARENT,
-    "B": BODY,
-    "D": BODY_DARK,
-    "P": EAR_INNER,
-    "E": EYE,
-    "W": WHITE,
-    "M": MOUTH,
-}
 
 FRAME_SIZE = 32  # all frames are 32x32
 
-# ---- Frame templates --------------------------------------------------------
-# Open eyes, mouth closed.
-_OPEN_EYES = [
+
+# =============================================================================
+# Palettes (per-pet)
+# =============================================================================
+TRANSPARENT = (0, 0, 0, 0)
+
+
+def _palette_claw() -> dict[str, tuple[int, int, int, int]]:
+    return {
+        " ": TRANSPARENT,
+        "B": (255, 178, 102, 255),  # warm orange body
+        "D": (204, 122, 51, 255),   # body shadow
+        "P": (255, 102, 178, 255),  # pink ear
+        "E": (40, 30, 30, 255),     # eye
+        "W": (250, 250, 250, 255),  # eye-white
+        "M": (180, 40, 60, 255),    # mouth/nose
+    }
+
+
+def _palette_rabbit() -> dict[str, tuple[int, int, int, int]]:
+    return {
+        " ": TRANSPARENT,
+        "F": (245, 245, 245, 255),  # white fluff
+        "G": (200, 200, 210, 255),  # fluff shadow / cool gray
+        "P": (255, 170, 200, 255),  # inner ear / nose
+        "E": (40, 30, 30, 255),
+        "W": (250, 250, 250, 255),
+        "M": (210, 80, 110, 255),
+    }
+
+
+def _palette_dachshund() -> dict[str, tuple[int, int, int, int]]:
+    return {
+        " ": TRANSPARENT,
+        "K": (139, 90, 43, 255),    # rich brown
+        "L": (95, 60, 28, 255),     # darker brown shadow
+        "T": (200, 150, 90, 255),   # tan highlight
+        "E": (30, 20, 20, 255),
+        "W": (250, 250, 250, 255),
+        "M": (60, 40, 30, 255),     # dark nose
+    }
+
+
+# =============================================================================
+# Helpers shared across pets
+# =============================================================================
+def _shift_down(rows: list[str], n: int = 1) -> list[str]:
+    if n <= 0:
+        return list(rows)
+    blank = " " * FRAME_SIZE
+    return [blank] * n + rows[: FRAME_SIZE - n]
+
+
+def _shift_horiz(rows: list[str], n: int) -> list[str]:
+    if n == 0:
+        return list(rows)
+    if n > 0:
+        return [(" " * n + row)[:FRAME_SIZE] for row in rows]
+    n = -n
+    return [(row[n:] + " " * n)[:FRAME_SIZE] for row in rows]
+
+
+def _replace(rows: list[str], **mapping: str) -> list[str]:
+    """Apply a char-mapping to every row (e.g. swap 'B' for 'F')."""
+    out = []
+    for row in rows:
+        for src, dst in mapping.items():
+            row = row.replace(src, dst)
+        out.append(row)
+    return out
+
+
+# =============================================================================
+# Pet definitions
+# =============================================================================
+@dataclass
+class PetSpriteSet:
+    name: str
+    palette: dict[str, tuple[int, int, int, int]]
+    idle_frames: list[list[str]]
+    walk_frames: list[list[str]]
+    sleep_frames: list[list[str]]
+    placeholder: list[str] = field(default_factory=list)
+
+
+# ---- CLAW (orange pirate cat) -----------------------------------------------
+_CLAW_OPEN_EYES = [
     "                                ",
     "                                ",
     "      DD              DD        ",
@@ -74,66 +140,190 @@ _OPEN_EYES = [
     "                                ",
     "                                ",
 ]
+_CLAW_CLOSED_EYES = list(_CLAW_OPEN_EYES)
+_CLAW_CLOSED_EYES[11] = "      BBBBBBBBBBBBBBBBBBBB      "
+_CLAW_CLOSED_EYES[12] = "      BBBEEBBBBBBBBBBEEBB       "
+_CLAW_CLOSED_EYES[13] = "      BBBBBBBBBBBBBBBBBBBB      "
 
-# Closed eyes: replace the 3-row eye block (rows 11-13) with a flat closed line.
-_CLOSED_EYES = list(_OPEN_EYES)
-_CLOSED_EYES[11] = "      BBBBBBBBBBBBBBBBBBBB      "
-_CLOSED_EYES[12] = "      BBBEEBBBBBBBBBBEEBB       "
-_CLOSED_EYES[13] = "      BBBBBBBBBBBBBBBBBBBB      "
+CLAW = PetSpriteSet(
+    name="claw",
+    palette=_palette_claw(),
+    idle_frames=[
+        _CLAW_OPEN_EYES,
+        _CLAW_OPEN_EYES,
+        _shift_down(_CLAW_OPEN_EYES, 1),
+        _shift_down(_CLAW_OPEN_EYES, 1),
+        _CLAW_OPEN_EYES,
+        _CLAW_OPEN_EYES,
+        _CLAW_CLOSED_EYES,
+        _CLAW_OPEN_EYES,
+    ],
+    walk_frames=[
+        _CLAW_OPEN_EYES,
+        _shift_horiz(_CLAW_OPEN_EYES, 1),
+        _shift_down(_CLAW_OPEN_EYES, 1),
+        _shift_horiz(_CLAW_OPEN_EYES, -1),
+        _CLAW_OPEN_EYES,
+        _shift_down(_shift_horiz(_CLAW_OPEN_EYES, 1), 1),
+    ],
+    sleep_frames=[
+        _shift_down(_CLAW_CLOSED_EYES, 2),
+        _shift_down(_CLAW_CLOSED_EYES, 2),
+        _shift_down(_CLAW_CLOSED_EYES, 3),
+        _shift_down(_CLAW_CLOSED_EYES, 3),
+    ],
+    placeholder=_CLAW_OPEN_EYES,
+)
 
 
-def _shift_down(rows: list[str], n: int = 1) -> list[str]:
-    """Shift all non-blank rows downward by n; pad top with blank rows."""
-    if n <= 0:
-        return list(rows)
-    blank = " " * FRAME_SIZE
-    return [blank] * n + rows[: FRAME_SIZE - n]
-
-
-# 8-frame breathing/blink loop. Subtle 1px vertical bob + a single blink.
-IDLE_FRAMES: list[list[str]] = [
-    _OPEN_EYES,                  # 0
-    _OPEN_EYES,                  # 1
-    _shift_down(_OPEN_EYES, 1),  # 2 — exhale (down 1px)
-    _shift_down(_OPEN_EYES, 1),  # 3
-    _OPEN_EYES,                  # 4 — inhale
-    _OPEN_EYES,                  # 5
-    _CLOSED_EYES,                # 6 — blink
-    _OPEN_EYES,                  # 7
+# ---- RABBIT (white, tall ears) ----------------------------------------------
+# Tall ears at top, round body, pink nose.
+_RABBIT_OPEN_EYES = [
+    "                                ",
+    "         FF        FF           ",
+    "         FF        FF           ",
+    "         FF        FF           ",
+    "         FFP      PFF           ",
+    "         FFP      PFF           ",
+    "         FFFF    FFFF           ",
+    "         FFFFFFFFFFFFF          ",
+    "       FFFFFFFFFFFFFFFFF        ",
+    "       FFFFFFFFFFFFFFFFF        ",
+    "       FFFEEFFFFFFFFEEFF        ",
+    "      FFFFEEFFFFFFFFEEFFF       ",
+    "      FFFFFFFFFFFFFFFFFFF       ",
+    "      FFFFFFFFFMMFFFFFFFF       ",
+    "      FFFFFFFFMMMMFFFFFFF       ",
+    "       FFFFFFFFFFFFFFFFF        ",
+    "       FFFFFFFFFFFFFFFFF        ",
+    "        FFFFFFFFFFFFFFF         ",
+    "        FFFFFFFFFFFFFFF         ",
+    "         FFFFFFFFFFFFF          ",
+    "         FFFFFFFFFFFFF          ",
+    "         FF FF FF FF            ",
+    "         FF FF FF FF            ",
+    "         GG GG GG GG            ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
 ]
+_RABBIT_CLOSED_EYES = list(_RABBIT_OPEN_EYES)
+_RABBIT_CLOSED_EYES[10] = "       FFFFFFFFFFFFFFFFFF       "
+_RABBIT_CLOSED_EYES[11] = "      FFFFEEFFFFFFFFFEEFFF      "
+_RABBIT_CLOSED_EYES[12] = "      FFFFFFFFFFFFFFFFFFF       "
+
+RABBIT = PetSpriteSet(
+    name="rabbit",
+    palette=_palette_rabbit(),
+    idle_frames=[
+        _RABBIT_OPEN_EYES,
+        _RABBIT_OPEN_EYES,
+        _shift_down(_RABBIT_OPEN_EYES, 1),
+        _shift_down(_RABBIT_OPEN_EYES, 1),
+        _RABBIT_OPEN_EYES,
+        _RABBIT_OPEN_EYES,
+        _RABBIT_CLOSED_EYES,
+        _RABBIT_OPEN_EYES,
+    ],
+    walk_frames=[
+        # Rabbits "hop" — bigger vertical motion.
+        _RABBIT_OPEN_EYES,
+        _shift_down(_RABBIT_OPEN_EYES, 1),
+        _shift_down(_RABBIT_OPEN_EYES, 2),
+        _shift_down(_RABBIT_OPEN_EYES, 1),
+        _RABBIT_OPEN_EYES,
+        _RABBIT_OPEN_EYES,
+    ],
+    sleep_frames=[
+        _shift_down(_RABBIT_CLOSED_EYES, 2),
+        _shift_down(_RABBIT_CLOSED_EYES, 2),
+        _shift_down(_RABBIT_CLOSED_EYES, 3),
+        _shift_down(_RABBIT_CLOSED_EYES, 3),
+    ],
+    placeholder=_RABBIT_OPEN_EYES,
+)
 
 
-def _shift_horiz(rows: list[str], n: int) -> list[str]:
-    """Shift content horizontally by n columns (positive=right). Pads with blanks."""
-    if n == 0:
-        return list(rows)
-    if n > 0:
-        return [(" " * n + row)[:FRAME_SIZE] for row in rows]
-    # n < 0: shift left
-    n = -n
-    return [(row[n:] + " " * n)[:FRAME_SIZE] for row in rows]
-
-
-# 6-frame walk cycle. The pet bobs up/down and sways subtly side-to-side; the
-# real horizontal motion comes from translating the window each tick.
-WALK_FRAMES: list[list[str]] = [
-    _OPEN_EYES,                                       # 0 neutral
-    _shift_horiz(_OPEN_EYES, 1),                      # 1 sway right
-    _shift_down(_OPEN_EYES, 1),                       # 2 step down
-    _shift_horiz(_OPEN_EYES, -1),                     # 3 sway left
-    _OPEN_EYES,                                       # 4 neutral
-    _shift_down(_shift_horiz(_OPEN_EYES, 1), 1),      # 5 step down + right
+# ---- DACHSHUND (long brown sausage with floppy ears) ------------------------
+# Long horizontal body, short legs, floppy ears hanging down on the head.
+_DACHS_OPEN_EYES = [
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                  KKKKKK        ",
+    "                 KKKKKKKK       ",
+    "                KKKKEKKKK       ",
+    "                KKKKEKKKK       ",
+    "                KKKKKKMKK       ",
+    "    KKKKKKKKKKKKKKKKKKKKK       ",
+    "   KKKKKKKKKKKKKKKKKKKKKKK      ",
+    "  KKKKKKKKKKKKKKKKKKKKKKKK      ",
+    "  KKKKKKKKKKKKKKKKKLKKKKK       ",
+    "  KKKKKKKKKKKKKKKKKLLKK         ",
+    "   KKKKKKKKKKKKKKKKLLK          ",
+    "    KK KK   KK KK   K           ",
+    "    KK KK   KK KK   K           ",
+    "    LL LL   LL LL   L           ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
+    "                                ",
 ]
+_DACHS_CLOSED_EYES = list(_DACHS_OPEN_EYES)
+_DACHS_CLOSED_EYES[9] = "                KKKKKKKKK       "
+_DACHS_CLOSED_EYES[10] = "                KKKKEEKKK       "
+_DACHS_CLOSED_EYES[11] = "                KKKKKKMKK       "
 
-# 4-frame sleep cycle. Eyes closed, body settled lower, slow rise/fall.
-SLEEP_FRAMES: list[list[str]] = [
-    _shift_down(_CLOSED_EYES, 2),
-    _shift_down(_CLOSED_EYES, 2),
-    _shift_down(_CLOSED_EYES, 3),
-    _shift_down(_CLOSED_EYES, 3),
-]
+DACHSHUND = PetSpriteSet(
+    name="dachshund",
+    palette=_palette_dachshund(),
+    idle_frames=[
+        _DACHS_OPEN_EYES,
+        _DACHS_OPEN_EYES,
+        _shift_down(_DACHS_OPEN_EYES, 1),
+        _shift_down(_DACHS_OPEN_EYES, 1),
+        _DACHS_OPEN_EYES,
+        _DACHS_OPEN_EYES,
+        _DACHS_CLOSED_EYES,
+        _DACHS_OPEN_EYES,
+    ],
+    walk_frames=[
+        _DACHS_OPEN_EYES,
+        _shift_horiz(_DACHS_OPEN_EYES, 1),
+        _shift_down(_DACHS_OPEN_EYES, 1),
+        _shift_horiz(_DACHS_OPEN_EYES, -1),
+        _DACHS_OPEN_EYES,
+        _shift_down(_shift_horiz(_DACHS_OPEN_EYES, 1), 1),
+    ],
+    sleep_frames=[
+        _shift_down(_DACHS_CLOSED_EYES, 2),
+        _shift_down(_DACHS_CLOSED_EYES, 2),
+        _shift_down(_DACHS_CLOSED_EYES, 3),
+        _shift_down(_DACHS_CLOSED_EYES, 3),
+    ],
+    placeholder=_DACHS_OPEN_EYES,
+)
 
-# ---- Tray icon --------------------------------------------------------------
+
+# =============================================================================
+# Tray icon (uses the claw palette)
+# =============================================================================
 _TRAY_PIXELS = [
     "                ",
     "  DD        DD  ",
@@ -154,8 +344,12 @@ _TRAY_PIXELS = [
 ]
 
 
-# ---- Rendering --------------------------------------------------------------
-def render_frame(pixels: list[str]) -> Image.Image:
+# =============================================================================
+# Rendering
+# =============================================================================
+def render_frame(
+    pixels: list[str], palette: dict[str, tuple[int, int, int, int]]
+) -> Image.Image:
     h = len(pixels)
     w = max(len(row) for row in pixels)
     img = Image.new("RGBA", (w, h), TRANSPARENT)
@@ -163,13 +357,14 @@ def render_frame(pixels: list[str]) -> Image.Image:
     assert px is not None
     for y, row in enumerate(pixels):
         for x, ch in enumerate(row.ljust(w)):
-            px[x, y] = PALETTE.get(ch, TRANSPARENT)
+            px[x, y] = palette.get(ch, TRANSPARENT)
     return img
 
 
-def render_sheet(frames: list[list[str]]) -> Image.Image:
-    """Compose frames horizontally into a sprite sheet."""
-    rendered = [render_frame(f) for f in frames]
+def render_sheet(
+    frames: list[list[str]], palette: dict[str, tuple[int, int, int, int]]
+) -> Image.Image:
+    rendered = [render_frame(f, palette) for f in frames]
     h = max(img.height for img in rendered)
     w = sum(img.width for img in rendered)
     sheet = Image.new("RGBA", (w, h), TRANSPARENT)
@@ -180,36 +375,35 @@ def render_sheet(frames: list[list[str]]) -> Image.Image:
     return sheet
 
 
+def write_pet_sprites(pet: PetSpriteSet) -> None:
+    sprites_dir = PETS_ROOT / pet.name / "sprites"
+    sprites_dir.mkdir(parents=True, exist_ok=True)
+    if pet.placeholder:
+        ph = render_frame(pet.placeholder, pet.palette)
+        ph_path = sprites_dir / "placeholder.png"
+        ph.save(ph_path)
+        print(f"wrote {ph_path}")
+    for state, frames in [
+        ("idle", pet.idle_frames),
+        ("walk", pet.walk_frames),
+        ("sleep", pet.sleep_frames),
+    ]:
+        sheet = render_sheet(frames, pet.palette)
+        path = sprites_dir / f"{state}.png"
+        sheet.save(path)
+        print(f"wrote {path} ({sheet.size[0]}x{sheet.size[1]}, {len(frames)} frames)")
+
+
+# =============================================================================
+# Main
+# =============================================================================
 def main() -> None:
-    SPRITES_DIR.mkdir(parents=True, exist_ok=True)
+    for pet in (CLAW, RABBIT, DACHSHUND):
+        write_pet_sprites(pet)
+
+    # Tray icon (always uses the claw look — single per-app icon).
     TRAY_PATH.parent.mkdir(parents=True, exist_ok=True)
-
-    # Single-frame placeholder kept for backwards-compat with Phase 1 callers.
-    placeholder = render_frame(_OPEN_EYES)
-    placeholder_path = SPRITES_DIR / "placeholder.png"
-    placeholder.save(placeholder_path)
-    print(f"wrote {placeholder_path} ({placeholder.size[0]}x{placeholder.size[1]})")
-
-    # Idle animation sprite sheet (Phase 2).
-    idle = render_sheet(IDLE_FRAMES)
-    idle_path = SPRITES_DIR / "idle.png"
-    idle.save(idle_path)
-    print(f"wrote {idle_path} ({idle.size[0]}x{idle.size[1]}, {len(IDLE_FRAMES)} frames)")
-
-    # Walk animation (Phase 4).
-    walk = render_sheet(WALK_FRAMES)
-    walk_path = SPRITES_DIR / "walk.png"
-    walk.save(walk_path)
-    print(f"wrote {walk_path} ({walk.size[0]}x{walk.size[1]}, {len(WALK_FRAMES)} frames)")
-
-    # Sleep animation (Phase 4).
-    sleep = render_sheet(SLEEP_FRAMES)
-    sleep_path = SPRITES_DIR / "sleep.png"
-    sleep.save(sleep_path)
-    print(f"wrote {sleep_path} ({sleep.size[0]}x{sleep.size[1]}, {len(SLEEP_FRAMES)} frames)")
-
-    # Tray icon (scaled 2x for crispness in hi-dpi tray bars).
-    tray = render_frame(_TRAY_PIXELS)
+    tray = render_frame(_TRAY_PIXELS, _palette_claw())
     tray = tray.resize((tray.size[0] * 2, tray.size[1] * 2), Image.NEAREST)
     tray.save(TRAY_PATH)
     print(f"wrote {TRAY_PATH} ({tray.size[0]}x{tray.size[1]})")

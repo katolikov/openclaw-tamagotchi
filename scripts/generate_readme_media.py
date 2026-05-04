@@ -372,10 +372,65 @@ def _draw_speech_bubble_big(
     draw.text((bx + pad_x, by + pad_y - 4), text, fill=(30, 30, 30, 255), font=font)
 
 
+def _pet_lineup_gif() -> list[Image.Image]:
+    """Render a side-by-side animation of all three pets idling on one ground.
+
+    Returns a list of frames (RGBA) ready to feed to _save_gif().
+    """
+    pet_dirs = [
+        ("Claw",      ROOT / "pets" / "claw"      / "sprites" / "idle.png", 8),
+        ("Mochi",     ROOT / "pets" / "rabbit"    / "sprites" / "idle.png", 8),
+        ("Frank",     ROOT / "pets" / "dachshund" / "sprites" / "idle.png", 8),
+    ]
+    panel_w, panel_h = 200, SCENE_H
+    n = 8  # all idle sheets have 8 frames
+    out: list[Image.Image] = []
+    try:
+        font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Bold.ttf", 14)
+    except OSError:
+        font = ImageFont.load_default()
+
+    # Pre-slice sprites once.
+    pet_frames: list[list[Image.Image]] = []
+    for _, p, count in pet_dirs:
+        frames = _slice_sheet(p, count)
+        scaled = [
+            f.resize((f.width * SCALE, f.height * SCALE), Image.NEAREST) for f in frames
+        ]
+        pet_frames.append(scaled)
+
+    for i in range(n):
+        canvas = Image.new("RGBA", (panel_w * 3, panel_h), (0, 0, 0, 0))
+        for col, ((label, _, _), frames) in enumerate(
+            zip(pet_dirs, pet_frames, strict=True)
+        ):
+            scene = Image.new("RGBA", (panel_w, panel_h), SKY_TOP)
+            d = ImageDraw.Draw(scene)
+            for y in range(panel_h - GROUND_HEIGHT):
+                t = y / max(1, panel_h - GROUND_HEIGHT - 1)
+                r = int(SKY_TOP[0] * (1 - t) + SKY_BOTTOM[0] * t)
+                g = int(SKY_TOP[1] * (1 - t) + SKY_BOTTOM[1] * t)
+                b = int(SKY_TOP[2] * (1 - t) + SKY_BOTTOM[2] * t)
+                d.line([(0, y), (panel_w, y)], fill=(r, g, b, 255))
+            d.rectangle([(0, panel_h - GROUND_HEIGHT), (panel_w, panel_h)], fill=GROUND)
+            d.rectangle(
+                [(0, panel_h - GROUND_HEIGHT), (panel_w, panel_h - GROUND_HEIGHT + 4)],
+                fill=GRASS,
+            )
+            f = frames[i % len(frames)]
+            x = (panel_w - f.width) // 2
+            y = panel_h - GROUND_HEIGHT - f.height + 4
+            scene.alpha_composite(f, (x, y))
+            d.text((8, 8), label, fill=(40, 30, 30, 255), font=font)
+            canvas.paste(scene, (col * panel_w, 0), scene)
+        out.append(canvas)
+    return out
+
+
 def main() -> None:
     DOCS.mkdir(parents=True, exist_ok=True)
 
-    # 1) idle/walk/sleep GIFs
+    # 1) idle/walk/sleep GIFs (claw, used as the default-pet preview).
     pairs = [
         ("idle", 8, 6.0),
         ("walk", 6, 12.0),
@@ -422,6 +477,22 @@ def main() -> None:
     social_path = DOCS / "social-preview.png"
     social.convert("RGB").save(social_path, optimize=True)
     print(f"wrote {social_path} ({social.size[0]}x{social.size[1]})")
+
+    # 5) Per-pet idle GIFs + lineup GIF
+    for pet_name, frame_count, fps in [
+        ("claw", 8, 6.0),
+        ("rabbit", 8, 6.0),
+        ("dachshund", 8, 5.0),
+    ]:
+        sheet_path = ROOT / "pets" / pet_name / "sprites" / "idle.png"
+        frames = _slice_sheet(sheet_path, frame_count)
+        scaled = _scaled_frames(frames)
+        comp = _composite_on_scene(scaled)
+        _save_gif(comp, DOCS / f"pet-{pet_name}.gif", fps=fps)
+
+    # All three pets idling side-by-side on one ground line.
+    lineup = _pet_lineup_gif()
+    _save_gif(lineup, DOCS / "pets-lineup.gif", fps=6.0)
 
 
 if __name__ == "__main__":

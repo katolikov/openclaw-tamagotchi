@@ -49,13 +49,21 @@ class PetWindow(QWidget):
         )
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating, True)
+        # WA_NoSystemBackground on top of WA_TranslucentBackground avoids the
+        # black / white "ghost" square that the Windows DWM compositor
+        # sometimes paints behind frameless translucent windows.
+        self.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground, True)
         # Belt-and-braces at the QWidget level so clicks on the pet never pull
         # focus away from text fields the user is typing in.
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.setWindowTitle(config.name)
+        # Suppress any default styling that could leak a 1-px border on Windows.
+        self.setStyleSheet("background: transparent;")
 
         self._label = QLabel(self)
         self._label.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+        self._label.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground, True)
+        self._label.setStyleSheet("background: transparent; border: 0;")
 
         self._player: AnimationPlayer | None = None
         # Drag state: offset from the window top-left to the press point.

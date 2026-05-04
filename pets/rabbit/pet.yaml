@@ -1,0 +1,31 @@
+name: "Mochi"
+species: "rabbit"
+# role: "garden_thief"
+
+sprites:
+  idle:
+    file: "sprites/idle.png"
+    frames: 8
+    fps: 6
+    loop: true
+  walk:
+    file: "sprites/walk.png"
+    frames: 6
+    fps: 10
+    loop: true
+  sleep:
+    file: "sprites/sleep.png"
+    frames: 4
+    fps: 3
+    loop: true
+
+behavior:
+  idle_to_walk_chance: 0.45        # rabbits hop a lot
+  walk_speed_px_per_sec: 55
+  sleep_after_idle_sec: 90
+  speech_interval_sec: [10, 25]
+
+stats:
+  hunger:    { initial: 100, decay_per_min: 0.6 }
+  energy:    { initial: 100, decay_per_min: 0.4 }
+  happiness: { initial: 100, decay_per_min: 0.3 }

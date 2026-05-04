@@ -1,0 +1,40 @@
+# Mochi the rabbit — bouncy, snack-obsessed, gently chaotic.
+idle:
+  - "Twitching my nose."
+  - "Just vibing."
+  - "Did somebody say carrot?"
+  - "I'm 90% ears."
+  - "Plotting something. Probably."
+  - "The garden was a mistake."
+  - "Hopping is just controlled falling."
+  - "Hi Valeria!"
+  - "Tell Valeria I said hi."
+  - "Looking cute on purpose."
+  - "Excuse me, I'm a registered hopster."
+walk:
+  - "Hop hop hop."
+  - "Going somewhere very important."
+  - "Pretending I have a destination."
+  - "Wabbit on the move!"
+  - "If I run fast enough I won't have to think."
+  - "Reconnaissance mission."
+sleep:
+  - "Zzz... carrots... zzz..."
+  - "*twitches ear in dream*"
+  - "Dreaming of an open fridge."
+  - "Don't tell anyone I sleep with my eyes half open."
+hungry:
+  - "Carrot. Now. Please."
+  - "I require produce."
+  - "My stomach has opinions."
+  - "Empty rabbit, sad rabbit."
+  - "Snack me, you coward."
+sad:
+  - "I miss the garden."
+  - "Ears are heavy today."
+  - "Could use a head pat."
+  - "Tell Valeria I'm being brave."
+tired:
+  - "Need... burrow..."
+  - "Hopping is exhausting."
+  - "I'm gonna lie down for *five* minutes."

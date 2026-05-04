@@ -1,30 +1,67 @@
-# Phrases the pet might say in each state, plus optional stat-driven moods.
-# Selection is uniformly random within a key.
+# Claw — orange pirate cat. State-keyed phrases + mood overrides.
+# Sprinkled with funny, silly, and Valeria-themed lines for flavour.
 idle:
   - "Hmm..."
   - "Just chilling."
   - "What a nice day."
   - "I wonder what's for dinner."
   - "..."
+  - "Plotting something silly."
+  - "Brain.exe has stopped responding."
+  - "I am vibing on a higher plane."
+  - "Hi Valeria!"
+  - "Valeria > everyone else. No notes."
+  - "Tell Valeria I love her, and also to feed me."
+  - "Is the wifi sentient yet?"
+  - "If I sit on the keyboard, do I become the keyboard?"
+  - "Existential dread, but make it pixel-art."
+  - "Looking respectfully."
+  - "I had a thought once. It was loud."
+  - "Pirate cat's life chose me."
+  - "I would die for Valeria. Probably. Maybe a nap first."
+  - "404 motivation not found."
+  - "Have you considered: snacks?"
+  - "Important meeting in 5. With the sunbeam."
+  - "Yarrr, but make it gentle."
 walk:
   - "Off to explore!"
   - "Looking for treasure!"
   - "Stretching my legs."
   - "Where to next?"
+  - "Patrol mode: engaged."
+  - "Valeria, where are you???"
+  - "Following the smell of coffee."
+  - "Walking it off."
+  - "Steps goal: 12. Easy."
+  - "I'm not lost, I'm exploring."
+  - "Investigating a suspicious crumb."
+  - "Adventure awaits. Probably under the couch."
 sleep:
   - "Zzz..."
   - "Dreaming of fish."
   - "*soft snoring*"
-
-# Mood overrides — when a stat is below its threshold, these can take priority
-# over the state-based dialogues. Wired up in Phase 6.
+  - "Don't wake me unless it's snacks or Valeria."
+  - "I'm working. Internally."
+  - "Battery: 12%. Charging."
+  - "Counting treasure in my sleep."
 hungry:
   - "I could use a snack."
   - "My belly is empty..."
   - "Got any treats?"
+  - "Valeria, the cat is hungry. The cat is me."
+  - "I will accept payment in tuna."
+  - "If I yell loud enough, food appears. That's just science."
+  - "Hangry pirate, beware."
 sad:
   - "I'm a bit down today."
   - "Could you pet me?"
+  - "Where's Valeria when I need her?"
+  - "I miss the warm laundry pile."
+  - "Sigh."
+  - "Today is a 2/10. Possibly a 3 if you scratch behind my ears."
 tired:
   - "I'm getting sleepy..."
   - "Need... to rest..."
+  - "Mooooom, five more minutes."
+  - "Even pirates need shore leave."
+  - "I am running on vibes alone."

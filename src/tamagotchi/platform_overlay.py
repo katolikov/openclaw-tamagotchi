@@ -81,6 +81,11 @@ _NS_DESKTOP_PET_COLLECTION = (
     | _NS_COLLECTION_BEHAVIOR_STATIONARY
     | _NS_COLLECTION_BEHAVIOR_IGNORES_CYCLE
 )
+# THE crucial bit for "show without stealing focus from the active app":
+# without this flag a Qt.Tool window is created as a normal NSPanel, which
+# activates the parent app whenever it's shown. With this flag the panel
+# becomes "non-activating" and never causes app activation on show().
+_NS_WINDOW_STYLE_MASK_NON_ACTIVATING_PANEL = 1 << 7    # 128
 
 
 def _hide_dock_icon_darwin() -> bool:
@@ -126,6 +131,23 @@ def _configure_overlay_darwin(widget: QWidget) -> bool:
         nswindow.setHidesOnDeactivate_(False)
         # Show on every Space; don't appear in cmd-tab cycling.
         nswindow.setCollectionBehavior_(_NS_DESKTOP_PET_COLLECTION)
+        # THE bit that prevents the bubble's appearance from stealing keyboard
+        # focus from whatever the user is typing in. Only meaningful on NSPanel
+        # (which Qt.Tool produces). On a plain NSWindow, setStyleMask_ may
+        # raise — that's caught by the broad except below.
+        try:
+            current_mask = nswindow.styleMask()
+            nswindow.setStyleMask_(
+                current_mask | _NS_WINDOW_STYLE_MASK_NON_ACTIVATING_PANEL
+            )
+        except Exception:  # noqa: BLE001
+            pass
+        # NSPanel-only: don't become the key window unless absolutely needed.
+        if hasattr(nswindow, "setBecomesKeyOnlyIfNeeded_"):
+            try:
+                nswindow.setBecomesKeyOnlyIfNeeded_(True)
+            except Exception:  # noqa: BLE001
+                pass
     except Exception:  # noqa: BLE001 — never crash the app over polish
         return False
     return True

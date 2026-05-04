@@ -1,0 +1,31 @@
+name: "Frank"
+species: "dachshund"
+# role: "professional_napper"
+
+sprites:
+  idle:
+    file: "sprites/idle.png"
+    frames: 8
+    fps: 5
+    loop: true
+  walk:
+    file: "sprites/walk.png"
+    frames: 6
+    fps: 9                 # short legs, deliberate gait
+    loop: true
+  sleep:
+    file: "sprites/sleep.png"
+    frames: 4
+    fps: 2
+    loop: true
+
+behavior:
+  idle_to_walk_chance: 0.18    # frank prefers loafing
+  walk_speed_px_per_sec: 28
+  sleep_after_idle_sec: 60     # naps early, naps often
+  speech_interval_sec: [15, 35]
+
+stats:
+  hunger:    { initial: 100, decay_per_min: 0.7 }   # always hungry
+  energy:    { initial: 100, decay_per_min: 0.25 }
+  happiness: { initial: 100, decay_per_min: 0.4 }
