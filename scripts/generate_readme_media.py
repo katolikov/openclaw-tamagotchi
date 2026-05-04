@@ -378,9 +378,9 @@ def _pet_lineup_gif() -> list[Image.Image]:
     Returns a list of frames (RGBA) ready to feed to _save_gif().
     """
     pet_dirs = [
-        ("Claw",      ROOT / "pets" / "claw"      / "sprites" / "idle.png", 8),
-        ("Mochi",     ROOT / "pets" / "rabbit"    / "sprites" / "idle.png", 8),
-        ("Frank",     ROOT / "pets" / "dachshund" / "sprites" / "idle.png", 8),
+        ("Claw",   ROOT / "pets" / "claw"      / "sprites" / "idle.png", 8),
+        ("Shamil", ROOT / "pets" / "rabbit"    / "sprites" / "idle.png", 8),
+        ("Alegra", ROOT / "pets" / "dachshund" / "sprites" / "idle.png", 8),
     ]
     panel_w, panel_h = 200, SCENE_H
     n = 8  # all idle sheets have 8 frames

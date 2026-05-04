@@ -38,9 +38,9 @@ Three pets ship in the box. Pick one with `--pet <name>`.
 
 | | Pet | Personality | Run with |
 | :---: | --- | --- | --- |
-| <img src="docs/pet-claw.gif" alt="Claw" width="120">      | **Claw** — pirate cat                | dreamy, nostalgic, gently chaotic     | `tamagotchi --pet claw`      |
-| <img src="docs/pet-rabbit.gif" alt="Mochi" width="120">    | **Mochi** — brown lop-eared rabbit   | bouncy, snack-obsessed, ears for days | `tamagotchi --pet rabbit`    |
-| <img src="docs/pet-dachshund.gif" alt="Frank" width="120"> | **Frank** — black-and-tan dachshund  | long boy, slow brain, expert napper   | `tamagotchi --pet dachshund` |
+| <img src="docs/pet-claw.gif" alt="Claw" width="120">        | **Claw** — pirate cat                 | dreamy, nostalgic, gently chaotic     | `tamagotchi --pet claw`      |
+| <img src="docs/pet-rabbit.gif" alt="Shamil" width="120">    | **Shamil** — brown lop-eared rabbit   | bouncy, snack-obsessed, ears for days | `tamagotchi --pet rabbit`    |
+| <img src="docs/pet-dachshund.gif" alt="Alegra" width="120"> | **Alegra** — black-and-tan dachshund  | long girl, slow brain, expert napper  | `tamagotchi --pet dachshund` |
 
 Each pet has its own sprite art, its own `pet.yaml` (different walk speed,
 sleep timer, hunger curve), and its own dialogue book — so they actually

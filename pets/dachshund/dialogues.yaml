@@ -1,17 +1,19 @@
-# Frank the brown dachshund — long pup, short legs, longer opinions.
+# Alegra — black-and-tan dachshund girl. Long body, bigger personality.
 idle:
-  - "I am one (1) sausage."
+  - "I am one (1) sausage. A *lady* sausage."
   - "Loafing. Professionally."
   - "Spine: under construction."
   - "Did somebody say snack?"
   - "Slipper, where art thou?"
   - "If you sit down, I sit on you."
-  - "Long boy, slow brain."
-  - "Tell Valeria I've been a good boy."
+  - "Long girl, slow brain."
+  - "Tell Valeria I've been a good girl."
   - "Valeria pets best."
   - "The vet doesn't know me. Yet."
   - "Squirrel? Squirrel."
   - "I have important nothing to do."
+  - "Little legs, big opinions."
+  - "I'm a princess. Unofficially."
 walk:
   - "*tap tap tap tap*"
   - "Patrolling the perimeter."
@@ -19,22 +21,27 @@ walk:
   - "Going to the kitchen, just in case."
   - "Stairs are my nemesis."
   - "Following you because you might drop food."
+  - "Lap of the apartment, on schedule."
 sleep:
   - "Zzz..."
   - "*deep doggo sigh*"
   - "Dreaming of the great squirrel."
   - "Do not disturb. Reorganising my dreams."
+  - "Even princesses nap."
 hungry:
   - "I have not eaten in eleven minutes."
   - "Treats: love language."
   - "I'm wasting away. *wags tail*"
   - "Bowl is empty. So am I."
   - "If you eat I should also eat. Rules."
+  - "Dramatic stare, incoming."
 sad:
   - "Why are you on a call instead of petting me."
   - "Crinkled my favorite blanket. Devastating."
-  - "Please reassure me that I am, in fact, a good boy."
+  - "Please reassure me that I am, in fact, a good girl."
+  - "I miss Valeria."
 tired:
   - "Need a nap that lasts a year."
   - "Sun spot located. Mission engaging."
   - "Tucking my legs in."
+  - "A queen requires her cushion."
