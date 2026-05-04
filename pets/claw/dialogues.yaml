@@ -1,0 +1,30 @@
+# Phrases the pet might say in each state, plus optional stat-driven moods.
+# Selection is uniformly random within a key.
+idle:
+  - "Hmm..."
+  - "Just chilling."
+  - "What a nice day."
+  - "I wonder what's for dinner."
+  - "..."
+walk:
+  - "Off to explore!"
+  - "Looking for treasure!"
+  - "Stretching my legs."
+  - "Where to next?"
+sleep:
+  - "Zzz..."
+  - "Dreaming of fish."
+  - "*soft snoring*"
+
+# Mood overrides — when a stat is below its threshold, these can take priority
+# over the state-based dialogues. Wired up in Phase 6.
+hungry:
+  - "I could use a snack."
+  - "My belly is empty..."
+  - "Got any treats?"
+sad:
+  - "I'm a bit down today."
+  - "Could you pet me?"
+tired:
+  - "I'm getting sleepy..."
+  - "Need... to rest..."

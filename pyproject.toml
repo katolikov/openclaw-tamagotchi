@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tamagotchi"
+version = "0.1.0"
+description = "Desktop pet that lives on your screen"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Artem Katolikov" }]
+dependencies = [
+    "PySide6>=6.6",
+    "pydantic>=2.5",
+    "PyYAML>=6.0",
+    "platformdirs>=4.0",
+    "Pillow>=10.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-qt>=4.2",
+    "mypy>=1.7",
+    "ruff>=0.1",
+    "types-PyYAML",
+]
+macos = [
+    "pyobjc-framework-Cocoa>=10.0; sys_platform == 'darwin'",
+]
+
+[project.scripts]
+tamagotchi = "tamagotchi.__main__:main"
+tamagotchi-import-openclaw = "tamagotchi.assets_pipeline.openclaw_import:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+tamagotchi = ["py.typed"]
+
+[tool.mypy]
+strict = true
+python_version = "3.11"
+files = ["src/tamagotchi", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["PIL.*"]
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

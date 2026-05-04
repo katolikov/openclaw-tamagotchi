@@ -1,0 +1,32 @@
+name: "Claw"
+species: "pirate_cat"
+# role is optional; leave unset for now. We'll wire it up in Phase 4-5.
+# role: "treasure_hunter"
+
+sprites:
+  idle:
+    file: "sprites/idle.png"
+    frames: 8
+    fps: 6
+    loop: true
+  walk:
+    file: "sprites/walk.png"
+    frames: 6
+    fps: 12
+    loop: true
+  sleep:
+    file: "sprites/sleep.png"
+    frames: 4
+    fps: 3
+    loop: true
+
+behavior:
+  idle_to_walk_chance: 0.3
+  walk_speed_px_per_sec: 40
+  sleep_after_idle_sec: 120
+  speech_interval_sec: [12, 30]
+
+stats:
+  hunger:    { initial: 100, decay_per_min: 0.5 }
+  energy:    { initial: 100, decay_per_min: 0.3 }
+  happiness: { initial: 100, decay_per_min: 0.4 }
