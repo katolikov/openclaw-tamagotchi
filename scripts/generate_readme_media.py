@@ -227,6 +227,146 @@ def _hero() -> Image.Image:
     return scene
 
 
+def _social_preview() -> Image.Image:
+    """1280x640 banner — used for GitHub social preview / OpenGraph cards."""
+    W, H = 1280, 640  # noqa: N806
+    img = Image.new("RGBA", (W, H), SKY_TOP)
+    draw = ImageDraw.Draw(img)
+
+    # Sky gradient
+    ground_h = 110
+    for y in range(H - ground_h):
+        t = y / max(1, H - ground_h - 1)
+        r = int(SKY_TOP[0] * (1 - t) + SKY_BOTTOM[0] * t)
+        g = int(SKY_TOP[1] * (1 - t) + SKY_BOTTOM[1] * t)
+        b = int(SKY_TOP[2] * (1 - t) + SKY_BOTTOM[2] * t)
+        draw.line([(0, y), (W, y)], fill=(r, g, b, 255))
+    # Ground + grass strip
+    draw.rectangle([(0, H - ground_h), (W, H)], fill=GROUND)
+    draw.rectangle([(0, H - ground_h), (W, H - ground_h + 14)], fill=GRASS)
+    draw.line([(0, H - ground_h + 14), (W, H - ground_h + 14)], fill=GROUND_LINE, width=2)
+
+    # Decorative tufts of grass
+    for x in range(20, W, 90):
+        draw.line([(x, H - ground_h + 6), (x, H - ground_h - 4)], fill=GROUND_LINE, width=2)
+        draw.line([(x + 2, H - ground_h + 6), (x + 4, H - ground_h - 6)], fill=GRASS, width=2)
+        draw.line([(x - 2, H - ground_h + 6), (x - 4, H - ground_h - 4)], fill=GRASS, width=2)
+
+    # Title + tagline (left side)
+    try:
+        title_font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Bold.ttf", 72)
+        tagline_font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial.ttf", 28)
+        meta_font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Menlo.ttc", 22)
+    except OSError:
+        title_font = tagline_font = meta_font = ImageFont.load_default()
+
+    title_color = (60, 40, 30, 255)
+    accent = (180, 90, 40, 255)
+
+    draw.text((60, 110), "openclaw", fill=title_color, font=title_font)
+    draw.text((60, 184), "tamagotchi", fill=accent, font=title_font)
+    draw.text(
+        (60, 280),
+        "A desktop pet that lives on top of every window.",
+        fill=(70, 55, 45, 255),
+        font=tagline_font,
+    )
+    draw.text(
+        (60, 320),
+        "PySide6 · pixel-art · cross-platform · open source",
+        fill=(120, 100, 90, 255),
+        font=tagline_font,
+    )
+
+    # Feature bullets
+    bullets = [
+        "▸ idle / walk / sleep state machine",
+        "▸ mood-aware speech bubbles",
+        "▸ drag, click, feed, persist",
+        "▸ OpenClaw asset importer",
+    ]
+    for i, line in enumerate(bullets):
+        draw.text(
+            (60, 380 + i * 32), line, fill=(80, 65, 55, 255), font=meta_font
+        )
+
+    # Pet on the right side, scaled big
+    idle = _slice_sheet(SPRITES / "idle.png", 8)[0]
+    pet_scale = 8
+    pet = idle.resize(
+        (idle.width * pet_scale, idle.height * pet_scale), Image.NEAREST
+    )
+    px = W - pet.width - 140
+    py = H - ground_h - pet.height + 14
+
+    # Pet shadow
+    sh = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    sd = ImageDraw.Draw(sh)
+    sx, sy = px + pet.width // 2, H - ground_h + 16
+    sd.ellipse([(sx - pet.width // 2 + 14, sy - 10), (sx + pet.width // 2 - 14, sy + 10)], fill=SHADOW)
+    sh = sh.filter(ImageFilter.GaussianBlur(6))
+    img = Image.alpha_composite(img, sh)
+
+    layer = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    layer.paste(pet, (px, py), pet)
+    img = Image.alpha_composite(img, layer)
+
+    # Speech bubble above the pet
+    _draw_speech_bubble_big(img, anchor=(px + pet.width // 2, py), text="Looking for treasure!")
+    return img
+
+
+def _draw_speech_bubble_big(
+    canvas: Image.Image, anchor: tuple[int, int], text: str
+) -> None:
+    """Larger speech bubble for the social preview banner."""
+    draw = ImageDraw.Draw(canvas)
+    try:
+        font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Bold.ttf", 26)
+    except OSError:
+        font = ImageFont.load_default()
+    pad_x, pad_y = 22, 14
+    tail_h = 16
+    bbox = draw.textbbox((0, 0), text, font=font)
+    text_w = bbox[2] - bbox[0]
+    text_h = bbox[3] - bbox[1]
+    bw = text_w + 2 * pad_x
+    bh = text_h + 2 * pad_y
+    bx = anchor[0] - bw // 2
+    by = anchor[1] - bh - tail_h - 10
+
+    shadow = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+    sd = ImageDraw.Draw(shadow)
+    sd.rounded_rectangle(
+        [(bx + 4, by + 6), (bx + bw + 4, by + bh + 6)],
+        radius=18,
+        fill=(0, 0, 0, 70),
+    )
+    shadow = shadow.filter(ImageFilter.GaussianBlur(5))
+    canvas.alpha_composite(shadow)
+
+    draw.rounded_rectangle(
+        [(bx, by), (bx + bw, by + bh)],
+        radius=18,
+        fill=(255, 255, 255, 245),
+        outline=(60, 60, 60, 230),
+        width=2,
+    )
+    tail_cx = anchor[0]
+    tail_top_y = by + bh
+    tail_tip_y = tail_top_y + tail_h
+    draw.polygon(
+        [
+            (tail_cx - 12, tail_top_y),
+            (tail_cx, tail_tip_y),
+            (tail_cx + 12, tail_top_y),
+        ],
+        fill=(255, 255, 255, 245),
+        outline=(60, 60, 60, 230),
+    )
+    draw.text((bx + pad_x, by + pad_y - 4), text, fill=(30, 30, 30, 255), font=font)
+
+
 def main() -> None:
     DOCS.mkdir(parents=True, exist_ok=True)
 
@@ -271,6 +411,12 @@ def main() -> None:
     hero_path = DOCS / "hero.png"
     hero.save(hero_path)
     print(f"wrote {hero_path} ({hero.size[0]}x{hero.size[1]})")
+
+    # 4) Social preview banner (1280x640, GitHub OG card)
+    social = _social_preview()
+    social_path = DOCS / "social-preview.png"
+    social.convert("RGB").save(social_path, optimize=True)
+    print(f"wrote {social_path} ({social.size[0]}x{social.size[1]})")
 
 
 if __name__ == "__main__":

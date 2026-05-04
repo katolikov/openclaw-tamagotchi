@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/social-preview.png" alt="openclaw-tamagotchi — a desktop pet that lives on top of every window" width="100%">
+</p>
+
 # openclaw-tamagotchi
 
 A desktop pet that lives on top of every other window. Inspired by the
@@ -5,13 +9,13 @@ A desktop pet that lives on top of every other window. Inspired by the
 re-implementation of *Capt. Claw*) and the visual style of
 [codex-pets.net](https://codex-pets.net/).
 
-<p align="center">
-  <img src="docs/hero.png" alt="The pet idling on the bottom of the screen, with a speech bubble saying 'Looking for treasure!'" width="640">
-</p>
-
 The pet idles, walks around the bottom of your screen, sleeps when tired,
 gets hungry, complains in speech bubbles, lets you drag it anywhere, and
 remembers how it was feeling the last time you quit.
+
+<p align="center">
+  <img src="docs/hero.png" alt="The pet on the screen with a speech bubble saying 'Looking for treasure!'" width="640">
+</p>
 
 ## In motion
 
