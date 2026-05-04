@@ -5,18 +5,24 @@ A desktop pet that lives on top of every other window. Inspired by the
 re-implementation of *Capt. Claw*) and the visual style of
 [codex-pets.net](https://codex-pets.net/).
 
+<p align="center">
+  <img src="docs/hero.png" alt="The pet idling on the bottom of the screen, with a speech bubble saying 'Looking for treasure!'" width="640">
+</p>
+
 The pet idles, walks around the bottom of your screen, sleeps when tired,
 gets hungry, complains in speech bubbles, lets you drag it anywhere, and
 remembers how it was feeling the last time you quit.
 
-```text
-                  ┌──────────────────┐
-                  │   Hmm...         │
-                  └──────────┬───────┘
-                             ▽
-                          ・ω・
-                       ───┴──┴───
-```
+## In motion
+
+| Idle | Walk | Sleep |
+| :---: | :---: | :---: |
+| <img src="docs/preview-idle.gif" alt="Idle animation" width="240"> | <img src="docs/preview-walk.gif" alt="Walk animation" width="240"> | <img src="docs/preview-sleep.gif" alt="Sleep animation" width="240"> |
+| 8 frames @ 6 fps | 6 frames @ 12 fps | 4 frames @ 3 fps |
+
+<p align="center">
+  <img src="docs/preview-all.gif" alt="All three animations side-by-side" width="720">
+</p>
 
 ## Features
 
