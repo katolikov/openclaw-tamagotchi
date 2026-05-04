@@ -188,8 +188,9 @@ def _draw_speech_bubble(
 # ---- Hero composite ---------------------------------------------------------
 def _hero() -> Image.Image:
     # Wider and a bit taller than the inline GIFs so the speech bubble has headroom.
+    # 3x SCENE_W gives room for all three pets without clipping.
     hero_h = SCENE_H + 40
-    scene = Image.new("RGBA", (SCENE_W * 2, hero_h), SKY_TOP)
+    scene = Image.new("RGBA", (SCENE_W * 3, hero_h), SKY_TOP)
     draw = ImageDraw.Draw(scene)
     for y in range(scene.height - GROUND_HEIGHT):
         t = y / max(1, scene.height - GROUND_HEIGHT - 1)
@@ -223,8 +224,31 @@ def _hero() -> Image.Image:
     layer.paste(pet, (px, py), pet)
     scene = Image.alpha_composite(scene, layer)
 
-    # Speech bubble pointing at the top of the pet
+    # Speech bubble pointing at the top of the (claw) pet
     _draw_speech_bubble(scene, anchor=(px + pet.width // 2, py), text="Looking for treasure!")
+
+    # Add Shamil and Alegra to the right of Claw so the hero shows the lineup.
+    extras = [
+        (ROOT / "pets" / "rabbit"    / "sprites" / "idle.png", "Shamil"),
+        (ROOT / "pets" / "dachshund" / "sprites" / "idle.png", "Alegra"),
+    ]
+    cur_x = px + pet.width + 50
+    for sheet_path, _label in extras:
+        epx = _slice_sheet(sheet_path, 8)[0]
+        epx_scaled = epx.resize((epx.width * SCALE, epx.height * SCALE), Image.NEAREST)
+        epy = scene.height - GROUND_HEIGHT - epx_scaled.height + 4
+
+        sh = Image.new("RGBA", scene.size, (0, 0, 0, 0))
+        sd = ImageDraw.Draw(sh)
+        sx, sy = cur_x + epx_scaled.width // 2, scene.height - GROUND_HEIGHT + 7
+        sd.ellipse([(sx - 30, sy - 5), (sx + 30, sy + 5)], fill=SHADOW)
+        sh = sh.filter(ImageFilter.GaussianBlur(3))
+        scene = Image.alpha_composite(scene, sh)
+
+        layer = Image.new("RGBA", scene.size, (0, 0, 0, 0))
+        layer.paste(epx_scaled, (cur_x, epy), epx_scaled)
+        scene = Image.alpha_composite(scene, layer)
+        cur_x += epx_scaled.width + 30
 
     return scene
 
@@ -292,32 +316,77 @@ def _social_preview() -> Image.Image:
             (60, 380 + i * 32), line, fill=(80, 65, 55, 255), font=meta_font
         )
 
-    # Pet on the right side, scaled big
-    idle = _slice_sheet(SPRITES / "idle.png", 8)[0]
-    pet_scale = 8
-    pet = idle.resize(
-        (idle.width * pet_scale, idle.height * pet_scale), Image.NEAREST
+    # All three pets on the right side, scaled big.
+    pets = [
+        (ROOT / "pets" / "claw"      / "sprites" / "idle.png", "Claw"),
+        (ROOT / "pets" / "rabbit"    / "sprites" / "idle.png", "Shamil"),
+        (ROOT / "pets" / "dachshund" / "sprites" / "idle.png", "Alegra"),
+    ]
+    pet_scale = 6
+    pet_imgs: list[tuple[Image.Image, str]] = [
+        (
+            _slice_sheet(p, 8)[0].resize(
+                (
+                    _slice_sheet(p, 8)[0].width * pet_scale,
+                    _slice_sheet(p, 8)[0].height * pet_scale,
+                ),
+                Image.NEAREST,
+            ),
+            label,
+        )
+        for p, label in pets
+    ]
+
+    # Layout the pets in a row on the right half of the banner.
+    right_half_x = 700
+    available_w = W - right_half_x - 60
+    spacing = available_w // len(pet_imgs)
+    try:
+        small_label_font = ImageFont.truetype(
+            "/System/Library/Fonts/Supplemental/Arial Bold.ttf", 18
+        )
+    except OSError:
+        small_label_font = ImageFont.load_default()
+
+    for i, (pet_img, label) in enumerate(pet_imgs):
+        cx = right_half_x + spacing // 2 + i * spacing
+        px = cx - pet_img.width // 2
+        py = H - ground_h - pet_img.height + 14
+
+        # Shadow
+        sh = Image.new("RGBA", img.size, (0, 0, 0, 0))
+        sd = ImageDraw.Draw(sh)
+        sx, sy = cx, H - ground_h + 12
+        sd.ellipse(
+            [(sx - pet_img.width // 3, sy - 7), (sx + pet_img.width // 3, sy + 7)],
+            fill=SHADOW,
+        )
+        sh = sh.filter(ImageFilter.GaussianBlur(4))
+        img = Image.alpha_composite(img, sh)
+
+        # Pet
+        layer = Image.new("RGBA", img.size, (0, 0, 0, 0))
+        layer.paste(pet_img, (px, py), pet_img)
+        img = Image.alpha_composite(img, layer)
+
+        # Pet name underneath
+        d2 = ImageDraw.Draw(img)
+        bbox = d2.textbbox((0, 0), label, font=small_label_font)
+        text_w = bbox[2] - bbox[0]
+        d2.text(
+            (cx - text_w // 2, H - ground_h + 28),
+            label,
+            fill=(240, 230, 220, 255),
+            font=small_label_font,
+        )
+
+    # Speech bubble above the centre pet
+    centre_pet_img, _ = pet_imgs[len(pet_imgs) // 2]
+    centre_cx = right_half_x + spacing + spacing // 2
+    centre_py = H - ground_h - centre_pet_img.height + 14
+    _draw_speech_bubble_big(
+        img, anchor=(centre_cx, centre_py), text="Looking for treasure!"
     )
-    px = W - pet.width - 140
-    py = H - ground_h - pet.height + 14
-
-    # Pet shadow
-    sh = Image.new("RGBA", img.size, (0, 0, 0, 0))
-    sd = ImageDraw.Draw(sh)
-    sx, sy = px + pet.width // 2, H - ground_h + 16
-    sd.ellipse(
-        [(sx - pet.width // 2 + 14, sy - 10), (sx + pet.width // 2 - 14, sy + 10)],
-        fill=SHADOW,
-    )
-    sh = sh.filter(ImageFilter.GaussianBlur(6))
-    img = Image.alpha_composite(img, sh)
-
-    layer = Image.new("RGBA", img.size, (0, 0, 0, 0))
-    layer.paste(pet, (px, py), pet)
-    img = Image.alpha_composite(img, layer)
-
-    # Speech bubble above the pet
-    _draw_speech_bubble_big(img, anchor=(px + pet.width // 2, py), text="Looking for treasure!")
     return img
 
 

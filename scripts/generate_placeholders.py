@@ -178,37 +178,35 @@ CLAW = PetSpriteSet(
 )
 
 
-# ---- SHAMIL (brown lop-ear bunny) -------------------------------------------
-# Lop ears hang clearly past the head silhouette so the rabbit reads as a
-# rabbit at a glance: rounded face, big floppy ears flanking it on both sides,
-# pink nose, cream muzzle patch. Compact sitting body underneath.
-# Inspired by a real lop bunny.
+# ---- SHAMIL (upright-eared brown bunny) -------------------------------------
+# Two tall pointy ears reading unmistakably as rabbit; round head, pink nose,
+# cream muzzle patch, compact body, two split front feet.
 _RABBIT_OPEN_EYES = [
     "                                ",
     "                                ",
-    "                                ",
-    "                                ",
+    "          FFFF    FFFF          ",
+    "          FPPF    FPPF          ",
+    "          FPPF    FPPF          ",
+    "          FPPF    FPPF          ",
+    "          FFFF    FFFF          ",
     "          FFFFFFFFFFFF          ",
-    "         FFFFFFFFFFFFFF         ",
     "        FFFFFFFFFFFFFFFF        ",
-    "        FFFFEEFFFFEEFFFF        ",
-    "        FFFFEEFFFFEEFFFF        ",
-    "  GG    FFFFFFFFFFFFFFFF    GG  ",
-    " GFFG   FFFFFFFPPFFFFFFFF  GFFG ",
-    " GFFFG  FFFFFFFPPFFFFFFFF GFFFG ",
-    "GGFFFFG FFFFFFWWWWFFFFFFF GFFFFG",
-    "GFFFFFFGFFFFFFWWWWFFFFFFFGFFFFFG",
-    "GFFFFFFGGFFFFFFFFFFFFFFFGGFFFFFG",
-    "GGFFFFGGGGFFFFFFFFFFFFGGGGFFFFGG",
-    " GGFFGG  GGFFFFFFFFFFGG  GGFFGG ",
-    "  GGGG    GGFFFFFFFFGG    GGGG  ",
-    "           GGFFFFFFGG           ",
-    "            FFFFFFFF            ",
-    "            FFFFFFFF            ",
-    "            FF FF FF            ",
-    "            GG GG GG            ",
-    "                                ",
-    "                                ",
+    "       FFFFFFFFFFFFFFFFFF       ",
+    "      FFFFFFFFFFFFFFFFFFFF      ",
+    "      FFFFEEFFFFFFFFEEFFFF      ",
+    "      FFFFEEFFFFFFFFEEFFFF      ",
+    "      FFFFFFFFFFFFFFFFFFFF      ",
+    "      FFFFFFFFPPPPFFFFFFFF      ",
+    "      FFFFFFFWWWWWWFFFFFFF      ",
+    "       FFFFFFFFFFFFFFFFFF       ",
+    "      FFFFFFFFFFFFFFFFFFFF      ",
+    "      FFFFFFFFFFFFFFFFFFFF      ",
+    "      FFFFFFFFFFFFFFFFFFFF      ",
+    "       FFFFFFFFFFFFFFFFFF       ",
+    "        FFFFFFFFFFFFFFFF        ",
+    "        FFFF        FFFF        ",
+    "        FFFF        FFFF        ",
+    "        GGGG        GGGG        ",
     "                                ",
     "                                ",
     "                                ",
@@ -218,8 +216,8 @@ _RABBIT_OPEN_EYES = [
     "                                ",
 ]
 _RABBIT_CLOSED_EYES = list(_RABBIT_OPEN_EYES)
-_RABBIT_CLOSED_EYES[7] = "        FFFFFFFFFFFFFFFF        "
-_RABBIT_CLOSED_EYES[8] = "        FFFFEEFFFFEEFFFF        "
+_RABBIT_CLOSED_EYES[11] = "      FFFFFFFFFFFFFFFFFFFF      "
+_RABBIT_CLOSED_EYES[12] = "      FFFFEEFFFFFFFFEEFFFF      "
 
 RABBIT = PetSpriteSet(
     name="rabbit",
