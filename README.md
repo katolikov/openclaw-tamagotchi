@@ -21,12 +21,8 @@ remembers how it was feeling the last time you quit.
 
 | Idle | Walk | Sleep |
 | :---: | :---: | :---: |
-| <img src="docs/preview-idle.gif" alt="Idle animation" width="240"> | <img src="docs/preview-walk.gif" alt="Walk animation" width="240"> | <img src="docs/preview-sleep.gif" alt="Sleep animation" width="240"> |
+| <img src="docs/preview-idle.gif" alt="Idle animation — all three pets" width="600"> | <img src="docs/preview-walk.gif" alt="Walk animation — all three pets" width="600"> | <img src="docs/preview-sleep.gif" alt="Sleep animation — all three pets" width="600"> |
 | 8 frames @ 6 fps | 6 frames @ 12 fps | 4 frames @ 3 fps |
-
-<p align="center">
-  <img src="docs/preview-all.gif" alt="All three animations side-by-side" width="720">
-</p>
 
 ## Pets included
 

@@ -496,44 +496,69 @@ def _pet_lineup_gif() -> list[Image.Image]:
     return out
 
 
+def _state_lineup_gif(state: str, frame_count: int) -> list[Image.Image]:
+    """All three pets performing the same animation, side-by-side."""
+    pet_dirs = [
+        ("Claw",   ROOT / "pets" / "claw"      / "sprites" / f"{state}.png"),
+        ("Shamil", ROOT / "pets" / "rabbit"    / "sprites" / f"{state}.png"),
+        ("Alegra", ROOT / "pets" / "dachshund" / "sprites" / f"{state}.png"),
+    ]
+    panel_w, panel_h = 200, SCENE_H
+    pet_frames = [
+        [
+            f.resize((f.width * SCALE, f.height * SCALE), Image.NEAREST)
+            for f in _slice_sheet(p, frame_count)
+        ]
+        for _, p in pet_dirs
+    ]
+    try:
+        font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Bold.ttf", 14)
+    except OSError:
+        font = ImageFont.load_default()
+
+    out: list[Image.Image] = []
+    for i in range(frame_count):
+        canvas = Image.new("RGBA", (panel_w * 3, panel_h), (0, 0, 0, 0))
+        for col, ((label, _), frames) in enumerate(
+            zip(pet_dirs, pet_frames, strict=True)
+        ):
+            scene = Image.new("RGBA", (panel_w, panel_h), SKY_TOP)
+            d = ImageDraw.Draw(scene)
+            for y in range(panel_h - GROUND_HEIGHT):
+                t = y / max(1, panel_h - GROUND_HEIGHT - 1)
+                r = int(SKY_TOP[0] * (1 - t) + SKY_BOTTOM[0] * t)
+                g = int(SKY_TOP[1] * (1 - t) + SKY_BOTTOM[1] * t)
+                b = int(SKY_TOP[2] * (1 - t) + SKY_BOTTOM[2] * t)
+                d.line([(0, y), (panel_w, y)], fill=(r, g, b, 255))
+            d.rectangle(
+                [(0, panel_h - GROUND_HEIGHT), (panel_w, panel_h)], fill=GROUND
+            )
+            d.rectangle(
+                [(0, panel_h - GROUND_HEIGHT), (panel_w, panel_h - GROUND_HEIGHT + 4)],
+                fill=GRASS,
+            )
+            f = frames[i % len(frames)]
+            x = (panel_w - f.width) // 2
+            y = panel_h - GROUND_HEIGHT - f.height + 4
+            scene.alpha_composite(f, (x, y))
+            d.text((8, 8), label, fill=(40, 30, 30, 255), font=font)
+            canvas.paste(scene, (col * panel_w, 0), scene)
+        out.append(canvas)
+    return out
+
+
 def main() -> None:
     DOCS.mkdir(parents=True, exist_ok=True)
 
-    # 1) idle/walk/sleep GIFs (claw, used as the default-pet preview).
+    # 1) idle/walk/sleep GIFs — all three pets side-by-side per state.
     pairs = [
         ("idle", 8, 6.0),
         ("walk", 6, 12.0),
         ("sleep", 4, 3.0),
     ]
-    composites: dict[str, list[Image.Image]] = {}
     for name, frame_count, fps in pairs:
-        frames = _slice_sheet(SPRITES / f"{name}.png", frame_count)
-        scaled = _scaled_frames(frames)
-        comp = _composite_on_scene(scaled)
-        composites[name] = comp
-        _save_gif(comp, DOCS / f"preview-{name}.gif", fps=fps)
-
-    # 2) Side-by-side "preview-all" GIF: pad shorter cycles by repeating to a common length.
-    common_len = max(len(c) for c in composites.values())
-    side_by_side: list[Image.Image] = []
-    panel_w = SCENE_W
-    panel_h = SCENE_H
-    for i in range(common_len):
-        canvas = Image.new("RGBA", (panel_w * 3, panel_h), (0, 0, 0, 0))
-        for col, name in enumerate(["idle", "walk", "sleep"]):
-            seq = composites[name]
-            frame = seq[i % len(seq)]
-            canvas.paste(frame, (col * panel_w, 0), frame)
-        # Labels
-        d = ImageDraw.Draw(canvas)
-        try:
-            font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial.ttf", 12)
-        except OSError:
-            font = ImageFont.load_default()
-        for col, label in enumerate(["IDLE", "WALK", "SLEEP"]):
-            d.text((col * panel_w + 8, 8), label, fill=(40, 30, 30, 255), font=font)
-        side_by_side.append(canvas)
-    _save_gif(side_by_side, DOCS / "preview-all.gif", fps=8.0)
+        frames = _state_lineup_gif(name, frame_count)
+        _save_gif(frames, DOCS / f"preview-{name}.gif", fps=fps)
 
     # 3) Hero composite
     hero = _hero()
